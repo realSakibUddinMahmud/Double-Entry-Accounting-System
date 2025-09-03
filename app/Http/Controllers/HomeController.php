@@ -29,20 +29,34 @@ class HomeController extends Controller
      */
     public function index()
     {
-        //check tenant is it loandlord or tenant
-        $currentTenant = app('currentTenant');
-        if (strpos($currentTenant->database, 'landlord') !== false) {
-            return view('admin.home.landlord');
-        }
-        else {
-            $totalPurchaseAmount = Purchase::sum('total_amount'); // Calculate the total purchases amount
-            $totalSaleAmount = Sale::sum('total_amount'); // Calculate the total sales amount
-            $totalReceivedAmount = Sale::sum('paid_amount'); // Calculate the total paid sales amount
-            $totalDueAmount = Sale::sum('due_amount'); // Calculate the total due sales amount
-            $totalCustomerCount = Customer::count(); // Count the total number of customers
-            $totalSupplierCount = Supplier::count(); // Count the total number of suppliers
-            $totalPurchaseCount = Purchase::count(); // Count the total number of purchases
-            $totalSalesCount = Sale::count(); // Count the total number of sales
+        try {
+            //check tenant is it loandlord or tenant
+            $currentTenant = app('currentTenant');
+            if (!$currentTenant || strpos($currentTenant->database, 'landlord') !== false) {
+                return view('admin.home.landlord');
+            }
+            else {
+                // Use try-catch to handle database connection issues
+                try {
+                    $totalPurchaseAmount = Purchase::sum('total_amount') ?? 0; // Calculate the total purchases amount
+                    $totalSaleAmount = Sale::sum('total_amount') ?? 0; // Calculate the total sales amount
+                    $totalReceivedAmount = Sale::sum('paid_amount') ?? 0; // Calculate the total paid sales amount
+                    $totalDueAmount = Sale::sum('due_amount') ?? 0; // Calculate the total due sales amount
+                    $totalCustomerCount = Customer::count() ?? 0; // Count the total number of customers
+                    $totalSupplierCount = Supplier::count() ?? 0; // Count the total number of suppliers
+                    $totalPurchaseCount = Purchase::count() ?? 0; // Count the total number of purchases
+                    $totalSalesCount = Sale::count() ?? 0; // Count the total number of sales
+                } catch (\Exception $e) {
+                    // If database connection fails, set default values
+                    $totalPurchaseAmount = 0;
+                    $totalSaleAmount = 0;
+                    $totalReceivedAmount = 0;
+                    $totalDueAmount = 0;
+                    $totalCustomerCount = 0;
+                    $totalSupplierCount = 0;
+                    $totalPurchaseCount = 0;
+                    $totalSalesCount = 0;
+                }
             
 
             $year = now()->year;
@@ -76,14 +90,18 @@ class HomeController extends Controller
                 'months', 'salesData', 'purchasesData'
             ));
         }
-        
+        } catch (\Exception $e) {
+            // If there's any error, redirect to landlord dashboard
+            return view('admin.home.landlord');
+        }
     }
 
     public function summaryData(Request $request)
     {
-        $range = $request->query('range', 'lifetime');
-        $querySale = Sale::query();
-        $queryPurchase = Purchase::query();
+        try {
+            $range = $request->query('range', 'lifetime');
+            $querySale = Sale::query();
+            $queryPurchase = Purchase::query();
 
         // Filter by range
         switch ($range) {
@@ -120,5 +138,13 @@ class HomeController extends Controller
             'totalReceivedAmount' => $totalReceivedAmount,
             'totalDueAmount' => $totalDueAmount,
         ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'totalSaleAmount' => 0,
+                'totalPurchaseAmount' => 0,
+                'totalReceivedAmount' => 0,
+                'totalDueAmount' => 0,
+            ]);
+        }
     }
 }
