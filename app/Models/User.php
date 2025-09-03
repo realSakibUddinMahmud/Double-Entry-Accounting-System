@@ -14,7 +14,14 @@ use OwenIt\Auditing\Auditable;
 class User extends Authenticatable implements AuditableContract
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, UsesTenantConnection, Auditable;
+    use HasFactory, Notifiable, HasRoles, Auditable;
+
+    /**
+     * The connection name for the model.
+     *
+     * @var string|null
+     */
+    protected $connection = 'landlord';
 
     /**
      * The attributes that are mass assignable.

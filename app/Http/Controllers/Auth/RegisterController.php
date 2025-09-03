@@ -106,56 +106,18 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
-        DB::connection('landlord')->beginTransaction();
-        DB::beginTransaction(); // Tenant transaction
+        $tenantId = Tenant::current()?->company_id ?? null;
 
-        try {
-            $timestamp = now();
-            $tenantId = Tenant::current()?->company_id ?? null;
+        // Create user using the User model (which now uses landlord connection)
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'tenant_id' => $tenantId,
+            'status' => true,
+            'password' => Hash::make($data['password']),
+        ]);
 
-            // 1. First insert into landlord
-            $userId = DB::connection('landlord')->table('users')->insertGetId([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'phone' => $data['phone'],
-                'tenant_id' => $tenantId,
-                'status' => true,
-                'password' => Hash::make($data['password']),
-                'created_at' => $timestamp,
-                'updated_at' => $timestamp,
-            ]);
-            $landlordUser = DB::connection('landlord')
-                ->table('users')
-                ->where('id', $userId)
-                ->first();
-
-            $userId = $landlordUser->id;
-            // 2. If tenant exists, insert into tenant with same ID
-            if ($tenantId) {
-                $tenantUser = User::create([
-                    'id' => $userId, // Ensure the ID matches the landlord's
-                    'name' => $data['name'],
-                    'email' => $data['email'],
-                    'phone' => $data['phone'],
-                    'tenant_id' => $tenantId,
-                    'status' => true,
-                    'password' => Hash::make($data['password']),
-                    'created_at' => $timestamp,
-                    'updated_at' => $timestamp,
-                ]);
-                DB::commit(); // Only commit tenant transaction if created
-            } else {
-                // If no tenant, just create in landlord
-                $tenantUser = $landlordUser;
-            }
-
-            DB::connection('landlord')->commit(); // Always commit landlord
-
-            return $tenantUser;
-        } catch (\Exception $e) {
-            DB::connection('landlord')->rollBack();
-            DB::rollBack();
-            throw $e;
-        }
+        return $user;
     }
 }
