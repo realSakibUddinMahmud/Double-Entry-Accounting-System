@@ -32,7 +32,13 @@ class HomeController extends Controller
         try {
             //check tenant is it loandlord or tenant
             $currentTenant = app('currentTenant');
-            if (!$currentTenant || strpos($currentTenant->database, 'landlord') !== false) {
+            if (!$currentTenant) {
+                return view('admin.home.landlord');
+            }
+            
+            // Check if this is a landlord tenant
+            $databaseConfig = json_decode($currentTenant->database, true);
+            if (!$databaseConfig || strpos($databaseConfig['database'] ?? '', 'landlord') !== false) {
                 return view('admin.home.landlord');
             }
             else {
