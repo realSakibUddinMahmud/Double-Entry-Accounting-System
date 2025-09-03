@@ -3,6 +3,7 @@
 namespace Hilinkz\DEAccounting\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Hilinkz\DEAccounting\Models\DeAccountTransaction;
 use Hilinkz\DEAccounting\Models\DeFile;
 use App\Scopes\CompanyScope;
@@ -15,6 +16,7 @@ class DeJournal extends Model implements AuditableContract
 {
     use Auditable;
     use UsesTenantConnection;
+    use HasFactory;
 
     protected $table = 'de_journals';
 
@@ -24,7 +26,7 @@ class DeJournal extends Model implements AuditableContract
     }
     public function debitTransaction()
     {
-        return $this->belongsTo(DeAccountTransaction::class, 'debit_transaction_id');   
+        return $this->belongsTo(DeAccountTransaction::class, 'debit_transaction_id');
     }
     public function journalable()
     {
@@ -68,7 +70,7 @@ class DeJournal extends Model implements AuditableContract
 
         $sourceTransactionId = $sourceTransaction->id;
         $destinationTransactionId = $destinationTransaction->id;
-        
+
         $journal = new DeJournal();
         $journal->date = $destinationTransaction->date;
         $journal->created_by = $destinationTransaction->created_by;
@@ -88,7 +90,7 @@ class DeJournal extends Model implements AuditableContract
         $journal->save();
 
         return $journal;
-                    
+
     }
     public function task()
     {

@@ -3,6 +3,7 @@
 namespace Hilinkz\DEAccounting\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Hilinkz\DEAccounting\Models\DeAccount;
 use Auth;
 
@@ -15,6 +16,7 @@ class DeAccountTransaction extends Model implements AuditableContract
 {
     use Auditable;
     use UsesTenantConnection;
+    use HasFactory;
 
     protected $table = 'account_transactions';
 
@@ -56,7 +58,7 @@ class DeAccountTransaction extends Model implements AuditableContract
         $amount = $requestedData['amount'];
         $account_transactionable_type = $requestedData['account_transactionable_type']??NULL;
         $account_transactionable_id = $requestedData['account_transactionable_id']??NULL;
-        
+
 
         $headType = DeAccount::headTypeCheck($account_id,$upDown);
 
@@ -78,12 +80,12 @@ class DeAccountTransaction extends Model implements AuditableContract
         $ac_transaction->created_by = $user_id;
         $ac_transaction->note = $note;
         $ac_transaction->account_transactionable_type = $account_transactionable_type;
-        $ac_transaction->account_transactionable_id = $account_transactionable_id;      
+        $ac_transaction->account_transactionable_id = $account_transactionable_id;
         $ac_transaction->save();
 
         return $ac_transaction;
-        
-            
+
+
     }
 
 }

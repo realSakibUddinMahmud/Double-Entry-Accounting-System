@@ -6,6 +6,7 @@ use OwenIt\Auditing\Auditable;
 use Kalnoy\Nestedset\NodeTrait;
 use Hilinkz\DEAccounting\Models\DeBank;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Hilinkz\DEAccounting\Models\DeAccountType;
 use Hilinkz\DEAccounting\Models\DeBankAccount;
@@ -18,6 +19,7 @@ class DeAccount extends Model implements AuditableContract
     use NodeTrait;
     use Auditable;
     use UsesTenantConnection;
+    use HasFactory;
 
     protected $table = 'accounts';
 

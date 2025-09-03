@@ -3,6 +3,7 @@
 namespace Hilinkz\DEAccounting\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Hilinkz\DEAccounting\Models\DeAccount;
 
 use Kalnoy\Nestedset\NodeTrait;
@@ -14,6 +15,7 @@ class DeAccountType extends Model implements AuditableContract
 {
     use Auditable;
     use UsesTenantConnection;
+    use HasFactory;
 
     protected $table = 'account_types';
 
