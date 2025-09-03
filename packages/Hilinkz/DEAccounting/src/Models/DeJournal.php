@@ -18,6 +18,20 @@ class DeJournal extends Model implements AuditableContract
 
     protected $table = 'de_journals';
 
+    protected $fillable = [
+        'company_id',
+        'date',
+        'amount',
+        'credit_transaction_id',
+        'debit_transaction_id',
+        'task_id',
+        'transaction_type',
+        'created_by',
+        'note',
+        'journalable_id',
+        'journalable_type',
+    ];
+
     public function creditTransaction()
     {
         return $this->belongsTo(DeAccountTransaction::class, 'credit_transaction_id');
