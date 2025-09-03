@@ -1,0 +1,276 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: [8.2, 8.3]
+        database: [sqlite, mysql]
+        
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: testing
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+        coverage: xdebug
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-${{ matrix.php-version }}-
+
+    - name: Install dependencies
+      run: |
+        composer install --prefer-dist --no-progress --no-interaction
+        npm install
+
+    - name: Create database directory
+      run: |
+        mkdir -p database
+        touch database/database.sqlite
+
+    - name: Prepare Laravel Application
+      run: |
+        cp .env.testing .env
+        php artisan key:generate
+        mkdir -p storage/logs
+        mkdir -p storage/framework/cache/data
+        mkdir -p storage/framework/sessions
+        mkdir -p storage/framework/views
+        mkdir -p bootstrap/cache
+        chmod -R 775 storage
+        chmod -R 775 bootstrap/cache
+
+    - name: Create SQLite database
+      if: matrix.database == 'sqlite'
+      run: |
+        touch database/database.sqlite
+
+    - name: Configure MySQL database
+      if: matrix.database == 'mysql'
+      run: |
+        echo "DB_CONNECTION=mysql" >> .env
+        echo "DB_HOST=127.0.0.1" >> .env
+        echo "DB_PORT=3306" >> .env
+        echo "DB_DATABASE=testing" >> .env
+        echo "DB_USERNAME=root" >> .env
+        echo "DB_PASSWORD=" >> .env
+
+    - name: Run database migrations
+      run: |
+        php artisan migrate --force --no-interaction
+        if [ -d "database/migrations/tenant" ]; then
+          php artisan migrate --path=database/migrations/tenant --force --no-interaction
+        fi
+
+    - name: Execute tests (Unit and Feature)
+      run: |
+        php artisan test --coverage-clover coverage.xml --parallel
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+  security:
+    runs-on: ubuntu-latest
+    name: Security Analysis
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction
+
+    - name: Run security audit
+      run: composer audit --no-dev
+
+  code-quality:
+    runs-on: ubuntu-latest
+    name: Code Quality
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction
+
+    - name: Run Laravel Pint (Code Style)
+      run: ./vendor/bin/pint --test
+
+    # Uncomment when Dusk is installed
+    # browser-tests:
+    #   runs-on: ubuntu-latest
+    #   name: Browser Tests
+    #   
+    #   steps:
+    #   - uses: actions/checkout@v4
+    #   
+    #   - name: Setup PHP
+    #     uses: shivammathur/setup-php@v2
+    #     with:
+    #       php-version: '8.2'
+    #       extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+    #   
+    #   - name: Install dependencies
+    #     run: |
+    #       composer install --prefer-dist --no-progress --no-interaction
+    #       npm install
+    #   
+    #   - name: Prepare Laravel Application
+    #     run: |
+    #       cp .env.example .env
+    #       php artisan key:generate
+    #       touch database/database.sqlite
+    #       php artisan migrate --force
+    #   
+    #   - name: Upgrade Chrome Driver
+    #     run: php artisan dusk:chrome-driver
+    #   
+    #   - name: Start Chrome Driver
+    #     run: ./vendor/laravel/dusk/bin/chromedriver-linux &
+    #   
+    #   - name: Run Laravel Server
+    #     run: php artisan serve --no-reload &
+    #   
+    #   - name: Run Dusk Tests
+    #     run: php artisan dusk --without-ui
+
+  # Nightly comprehensive test with multiple configurations
+  nightly:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    name: Nightly Comprehensive Test
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: [8.2, 8.3]
+        database: [sqlite, mysql, pgsql]
+        
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: testing
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testing
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, pdo_mysql, pdo_pgsql, bcmath, soap, intl, gd, exif, iconv
+        coverage: xdebug
+
+    - name: Install dependencies
+      run: |
+        composer install --prefer-dist --no-progress --no-interaction
+        npm install
+
+    - name: Prepare Laravel Application
+      run: |
+        cp .env.testing .env
+        php artisan key:generate
+        mkdir -p storage/logs bootstrap/cache
+        chmod -R 775 storage bootstrap/cache
+
+    - name: Configure Database
+      run: |
+        if [ "${{ matrix.database }}" = "mysql" ]; then
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=testing" >> .env
+          echo "DB_USERNAME=root" >> .env
+          echo "DB_PASSWORD=" >> .env
+        elif [ "${{ matrix.database }}" = "pgsql" ]; then
+          echo "DB_CONNECTION=pgsql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=5432" >> .env
+          echo "DB_DATABASE=testing" >> .env
+          echo "DB_USERNAME=postgres" >> .env
+          echo "DB_PASSWORD=postgres" >> .env
+        else
+          touch database/database.sqlite
+          echo "DB_CONNECTION=sqlite" >> .env
+          echo "DB_DATABASE=database/database.sqlite" >> .env
+        fi
+
+    - name: Run database migrations
+      run: |
+        php artisan migrate --force --no-interaction
+        if [ -d "database/migrations/tenant" ]; then
+          php artisan migrate --path=database/migrations/tenant --force --no-interaction
+        fi
+
+    - name: Run comprehensive tests
+      run: |
+        php artisan test --coverage-clover coverage.xml --parallel
+        
+    - name: Generate coverage report
+      run: |
+        php artisan test --coverage-html coverage-html/
+
+# Schedule nightly tests
+on:
+  schedule:
+    - cron: '0 2 * * *' # Run at 2 AM UTC daily
+
+# Allow manual trigger
+  workflow_dispatch:
