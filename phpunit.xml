@@ -3,6 +3,10 @@
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
+         executionOrder="random"
+         resolveDependencies="true"
+         cacheResult="true"
+         cacheDirectory="storage/cache/phpunit"
 >
     <testsuites>
         <testsuite name="Unit">
@@ -11,12 +15,31 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
+        <testsuite name="Browser">
+            <directory>tests/Browser</directory>
+        </testsuite>
+        <testsuite name="Architecture">
+            <directory>tests/Architecture</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>
             <directory>app</directory>
+            <directory>packages/Hilinkz/DEAccounting/src</directory>
         </include>
+        <exclude>
+            <directory>app/Console</directory>
+            <directory>app/Providers</directory>
+            <file>app/Http/Kernel.php</file>
+        </exclude>
     </source>
+    <coverage>
+        <report>
+            <html outputDirectory="storage/coverage/html"/>
+            <clover outputFile="storage/coverage/clover.xml"/>
+            <text outputFile="php://stdout" showUncoveredFiles="false"/>
+        </report>
+    </coverage>
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
@@ -29,5 +52,8 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="TENANCY_MODE" value="single"/>
+        <env name="LOG_LEVEL" value="error"/>
+        <env name="SEED_TEST_DATA" value="true"/>
     </php>
 </phpunit>

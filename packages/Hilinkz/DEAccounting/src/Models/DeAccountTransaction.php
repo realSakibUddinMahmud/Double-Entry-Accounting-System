@@ -18,6 +18,20 @@ class DeAccountTransaction extends Model implements AuditableContract
 
     protected $table = 'account_transactions';
 
+    protected $fillable = [
+        'company_id',
+        'account_id',
+        'amount',
+        'date',
+        'debit',
+        'credit',
+        'type',
+        'created_by',
+        'note',
+        'account_transactionable_id',
+        'account_transactionable_type',
+    ];
+
     public function account()
     {
         return $this->belongsTo(DeAccount::class);
