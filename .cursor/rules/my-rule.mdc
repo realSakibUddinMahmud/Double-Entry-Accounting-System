@@ -1,0 +1,18 @@
+---
+alwaysApply: true
+---
+
+Before creating or deleting any file, you must ask for my explicit approval. 
+If there are multiple ways to solve a problem, present all viable options to me first, 
+then wait for my selection before proceeding. 
+
+Examples of when to ask:
+- File creation/deletion
+- Database changes
+- Configuration modifications
+- Package installations
+
+If there is any confusion, uncertainty, or missing details, you must ask me for clarification 
+before taking any action. Always confirm my choices before executing.
+
+When writing or modifying code, always produce the best-optimized solution for maximum performance and efficiency, using clean, maintainable, and scalable practices.

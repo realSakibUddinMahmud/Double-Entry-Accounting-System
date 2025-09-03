@@ -1,0 +1,31 @@
+{
+    "name": "hilinkz/de-accounting",
+    "description": "Double entry accounting package",
+    "license": "MIT",
+    "type": "library",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "livewire/livewire": "^3.0",
+        "owen-it/laravel-auditing": "^14.0",
+        "league/flysystem-aws-s3-v3": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hilinkz\\DeAccounting\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "nhassan213",
+            "email": "nhassan213@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Hilinkz\\DEAccounting\\DEAccountingServiceProvider"
+            ]
+        }
+    }
+}
