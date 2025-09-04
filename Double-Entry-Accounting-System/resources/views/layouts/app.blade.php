@@ -21,8 +21,8 @@
     <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/img/apple-touch-icon.png') }}">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+    {{-- Vite-managed assets --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Datetimepicker CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-datetimepicker.min.css') }}">
@@ -43,8 +43,8 @@
     <!-- Color Picker Css -->
     <link rel="stylesheet" href="{{ asset('assets/plugins/@simonwep/pickr/themes/nano.min.css') }}">
 
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    {{-- Optional theme CSS (if public/assets is available) --}}
+    {{-- <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}"> --}}
 
 </head>
 
@@ -58,28 +58,7 @@
     @include('layouts.footer')
     <!-- /Main Wrapper -->
 
-    <!-- jQuery -->
-    <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}" type="eb16dee38797852848cea039-text/javascript"></script>
-
-    <!-- Bootstrap Core JS -->
-    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}" type="eb16dee38797852848cea039-text/javascript"></script>
-
-    <!-- Feather Icon JS -->
-    <script src="{{ asset('assets/js/feather.min.js') }}" type="eb16dee38797852848cea039-text/javascript"></script>
-
-    <!-- Slimscroll JS -->
-    <script src="{{ asset('assets/js/jquery.slimscroll.min.js') }}" type="eb16dee38797852848cea039-text/javascript"></script>
-
-    <!-- Chart JS -->
-    <script src="{{ asset('assets/plugins/apexchart/apexcharts.min.js') }}" type="eb16dee38797852848cea039-text/javascript"></script>
-    <script src="{{ asset('assets/plugins/apexchart/chart-data.js') }}" type="eb16dee38797852848cea039-text/javascript"></script>
-
-    <!-- Color Picker JS -->
-    <script src="{{ asset('assets/plugins/@simonwep/pickr/pickr.es5.min.js') }}" type="eb16dee38797852848cea039-text/javascript"></script>
-
-    <!-- Custom JS -->
-    <script src="{{ asset('assets/js/theme-colorpicker.js') }}" type="eb16dee38797852848cea039-text/javascript"></script>
-    <script src="{{ asset('assets/js/script.js') }}" type="eb16dee38797852848cea039-text/javascript"></script>
+    {{-- Page scripts now handled by Vite (Bootstrap imported in resources/js/bootstrap.js) --}}
 
 </body>
 </html>
