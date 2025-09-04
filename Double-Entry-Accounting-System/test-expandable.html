@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Expandable Functionality</title>
+    <style>
+        .expand-btn {
+            color: #6c757d;
+            transition: all 0.2s ease;
+            border: none;
+            background: none;
+            padding: 0;
+            margin: 0;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .expand-btn:hover {
+            color: #495057;
+            transform: scale(1.1);
+        }
+
+        .expand-icon {
+            transition: transform 0.2s ease;
+            font-size: 14px;
+        }
+
+        .summary-row {
+            background-color: #f8f9fa;
+        }
+
+        .summary-row:hover {
+            background-color: #e9ecef;
+        }
+
+        .detail-row {
+            background-color: #ffffff;
+            display: none;
+        }
+
+        .detail-row:hover {
+            background-color: #f8f9fa;
+        }
+
+        .summary-row td:first-child {
+            border-left: 3px solid #007bff;
+        }
+
+        .detail-row td:first-child {
+            border-left: 3px solid #28a745;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Expandable Balance Sheet</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Account</th>
+                <th>Amount (Tk)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Assets Section -->
+            <tr>
+                <td class="text-start fw-bold">Assets</td>
+                <td></td>
+            </tr>
+            
+            <!-- Summary Row (Expandable) -->
+            <tr class="summary-row" data-category="assets" data-title="Cash Account">
+                <td class="text-start ps-4">
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-sm btn-link p-0 me-2 expand-btn" data-expanded="false">
+                            <span class="expand-icon">→</span>
+                        </button>
+                        <span class="fw-medium">Cash Account</span>
+                    </div>
+                </td>
+                <td class="text-end">15,000.00</td>
+            </tr>
+            
+            <!-- Detailed Rows (Hidden by default) -->
+            <tr class="detail-row" data-category="assets" data-parent="Cash Account">
+                <td class="text-start ps-5">
+                    <div class="d-flex align-items-center">
+                        <span class="me-3">└─</span>
+                        <span>Cash Account - Main</span>
+                        <small class="text-muted ms-2">(1001)</small>
+                    </div>
+                </td>
+                <td class="text-end">8,000.00</td>
+            </tr>
+            
+            <tr class="detail-row" data-category="assets" data-parent="Cash Account">
+                <td class="text-start ps-5">
+                    <div class="d-flex align-items-center">
+                        <span class="me-3">└─</span>
+                        <span>Cash Account - Branch A</span>
+                        <small class="text-muted ms-2">(1002)</small>
+                    </div>
+                </td>
+                <td class="text-end">4,000.00</td>
+            </tr>
+            
+            <tr class="detail-row" data-category="assets" data-parent="Cash Account">
+                <td class="text-start ps-5">
+                    <div class="d-flex align-items-center">
+                        <span class="me-3">└─</span>
+                        <span>Cash Account - Branch B</span>
+                        <small class="text-muted ms-2">(1003)</small>
+                    </div>
+                </td>
+                <td class="text-end">3,000.00</td>
+            </tr>
+
+            <!-- Another Summary Row -->
+            <tr class="summary-row" data-category="assets" data-title="Bank Account">
+                <td class="text-start ps-4">
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-sm btn-link p-0 me-2 expand-btn" data-expanded="false">
+                            <span class="expand-icon">→</span>
+                        </button>
+                        <span class="fw-medium">Bank Account</span>
+                    </div>
+                </td>
+                <td class="text-end">25,000.00</td>
+            </tr>
+            
+            <!-- Detailed Rows for Bank -->
+            <tr class="detail-row" data-category="assets" data-parent="Bank Account">
+                <td class="text-start ps-5">
+                    <div class="d-flex align-items-center">
+                        <span class="me-3">└─</span>
+                        <span>Bank Account - Main</span>
+                        <small class="text-muted ms-2">(2001)</small>
+                    </div>
+                </td>
+                <td class="text-end">25,000.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing test functionality...');
+            
+            const expandButtons = document.querySelectorAll('.expand-btn');
+            console.log('Found expand buttons:', expandButtons.length);
+            
+            expandButtons.forEach(function(button, index) {
+                console.log(`Setting up expand button ${index + 1}:`, button);
+                
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    console.log('Expand button clicked!');
+                    
+                    const summaryRow = this.closest('.summary-row');
+                    const category = summaryRow.getAttribute('data-category');
+                    const title = summaryRow.getAttribute('data-title');
+                    const isExpanded = this.getAttribute('data-expanded') === 'true';
+                    
+                    console.log('Button details:', { category, title, isExpanded });
+                    
+                    // Toggle expanded state
+                    if (isExpanded) {
+                        // Collapse
+                        this.setAttribute('data-expanded', 'false');
+                        this.querySelector('.expand-icon').textContent = '→';
+                        
+                        // Hide detail rows
+                        const detailRows = document.querySelectorAll(`.detail-row[data-category="${category}"][data-parent="${title}"]`);
+                        console.log('Hiding detail rows:', detailRows.length);
+                        detailRows.forEach(row => {
+                            row.style.display = 'none';
+                        });
+                    } else {
+                        // Expand
+                        this.setAttribute('data-expanded', 'true');
+                        this.querySelector('.expand-icon').textContent = '↓';
+                        
+                        // Show detail rows
+                        const detailRows = document.querySelectorAll(`.detail-row[data-category="${category}"][data-parent="${title}"]`);
+                        console.log('Showing detail rows:', detailRows.length);
+                        detailRows.forEach(row => {
+                            row.style.display = 'table-row';
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

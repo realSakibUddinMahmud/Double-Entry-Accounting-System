@@ -1,0 +1,29 @@
+Every shop and company/tenant must have default Assets,Expensees,Liabilities,Income and Capital account.
+
+Under all shop's parent account we nedd those child account.
+
+Assets:Cash,Inventory,Customer Receivable
+Income:Sales Revenue
+Expensees:Cost of Goods Sold
+Liabilities:Supplier Payable
+
+Shop A (Parent)
+├── Assets
+│   ├── Cash
+│   ├── Bank
+│   ├── Inventory
+│   └── Customers Receivable
+├── Liabilities
+│   ├── Suppliers Payable
+│   ├── Taxes Payable
+│   └── Loans Payable
+├── Equity
+│   ├── Owner’s Capital
+│   └── Retained Earnings
+├── Income
+│   └── Sales Revenue
+└── Expenses
+    ├── COGS
+    ├── Rent Expense
+    ├── Salaries and Wages
+    └── Others...
