@@ -21,8 +21,8 @@
     <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/img/apple-touch-icon.png') }}">
 
-    {{-- Vite-managed assets --}}
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <!-- Bootstrap CSS (static) -->
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
 
     <!-- Datetimepicker CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-datetimepicker.min.css') }}">
@@ -58,7 +58,7 @@
     @include('layouts.footer')
     <!-- /Main Wrapper -->
 
-    {{-- Theme core scripts (optional, complements Vite) --}}
+    <!-- Theme core scripts (static) -->
     <script src="{{ asset('assets/js/script.js') }}" type="text/javascript"></script>
 
 </body>
