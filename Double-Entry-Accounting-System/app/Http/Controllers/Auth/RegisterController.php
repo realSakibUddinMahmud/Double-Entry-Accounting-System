@@ -130,20 +130,24 @@ class RegisterController extends Controller
                 ->first();
 
             $userId = $landlordUser->id;
-            // 2. Always create a tenant-side Eloquent user with the same ID
-            // Returning an Eloquent model ensures the auth guard can log in the user
-            $tenantUser = User::create([
-                'id' => $userId,
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'phone' => $data['phone'],
-                'tenant_id' => $tenantId, // may be null
-                'status' => true,
-                'password' => Hash::make($data['password']),
-                'created_at' => $timestamp,
-                'updated_at' => $timestamp,
-            ]);
-            DB::commit(); // commit tenant transaction
+            // 2. If tenant exists, insert into tenant with same ID
+            if ($tenantId) {
+                $tenantUser = User::create([
+                    'id' => $userId, // Ensure the ID matches the landlord's
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'phone' => $data['phone'],
+                    'tenant_id' => $tenantId,
+                    'status' => true,
+                    'password' => Hash::make($data['password']),
+                    'created_at' => $timestamp,
+                    'updated_at' => $timestamp,
+                ]);
+                DB::commit(); // Only commit tenant transaction if created
+            } else {
+                // If no tenant, just create in landlord
+                $tenantUser = $landlordUser;
+            }
 
             DB::connection('landlord')->commit(); // Always commit landlord
 
