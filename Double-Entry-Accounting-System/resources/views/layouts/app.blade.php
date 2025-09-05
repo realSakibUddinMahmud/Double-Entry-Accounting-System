@@ -44,7 +44,7 @@
     <link rel="stylesheet" href="{{ asset('assets/plugins/@simonwep/pickr/themes/nano.min.css') }}">
 
     {{-- Optional theme CSS (if public/assets is available) --}}
-    {{-- <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}"> --}}
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
 </head>
 
@@ -58,7 +58,8 @@
     @include('layouts.footer')
     <!-- /Main Wrapper -->
 
-    {{-- Page scripts now handled by Vite (Bootstrap imported in resources/js/bootstrap.js) --}}
+    {{-- Theme core scripts (optional, complements Vite) --}}
+    <script src="{{ asset('assets/js/script.js') }}" type="text/javascript"></script>
 
 </body>
 </html>
