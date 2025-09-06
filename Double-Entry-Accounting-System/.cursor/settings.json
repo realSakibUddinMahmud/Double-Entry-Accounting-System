@@ -1,0 +1,37 @@
+{
+    "ai.model": "claude-3.5-sonnet",
+    "ai.maxTokens": 4000,
+    "ai.temperature": 0.1,
+    "ai.streaming": true,
+    "ai.autoComplete": true,
+    "ai.autoCompleteDelay": 100,
+    "ai.contextWindow": 100000,
+    "ai.maxFileSize": 1000000,
+    "ai.excludePatterns": [
+        "**/node_modules/**",
+        "**/vendor/**",
+        "**/storage/**",
+        "**/bootstrap/cache/**",
+        "**/public/assets/**",
+        "**/public/vendor/**",
+        "**/.git/**",
+        "**/storage/logs/**",
+        "**/storage/framework/cache/**"
+    ],
+    "ai.includePatterns": [
+        "**/*.php",
+        "**/*.blade.php",
+        "**/*.js",
+        "**/*.css",
+        "**/*.json",
+        "**/*.md"
+    ],
+    "ai.maxFiles": 1000,
+    "ai.maxTokensPerFile": 50000,
+    "ai.responseTimeout": 30000,
+    "ai.memoryLimit": "512MB",
+    "ai.cacheEnabled": true,
+    "ai.cacheSize": 100,
+    "ai.parallelProcessing": true,
+    "ai.batchSize": 10
+}

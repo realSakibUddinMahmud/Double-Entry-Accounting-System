@@ -1,0 +1,141 @@
+Inventory Management + Double Entry Accounting - Features List
+
+1. User Authentication & Security
+   - Secure login and registration with phone/email and password
+   - Email verification for new users
+   - Password reset functionality
+   - Role-based access control (RBAC) with permissions
+   - "Remember me" and session management
+
+2. User & Role Management
+   - User listing with company and contact details
+   - Assign roles and permissions to users
+   - Edit, view, and delete user accounts (with permission checks)
+   - Role assignment interface for granular access control
+
+3. Company & Store Management
+   - Manage multiple companies/tenants
+   - Store management (add, edit, delete stores)
+   - Assign users to specific companies and stores
+   - Manage Customers (add, edit, delete, view)
+   - Manage Suppliers (add, edit, delete, view)
+
+4. Product & Inventory Management
+   - Product catalog with SKU, barcode, and unit management
+   - Add, edit, and delete products
+   - Manage product units and conversions
+   - Stock adjustment (increase/decrease stock with reason)
+   - Real-time inventory tracking per store
+
+5. Purchase Management
+   - Create and manage purchase orders
+   - Add products to purchases with tax, cost, and quantity
+   - Supplier management
+   - Track purchase payments and due amounts
+   - Permission-based access to purchase features
+
+6. Sales Management
+   - Create and manage sales invoices
+   - Add products to sales with tax, price, and quantity
+   - Customer management
+   - Track sales payments, due amounts, and payment status
+   - Permission-based access to sales features
+
+7. Tax & Unit Configuration
+   - Manage tax rates and methods (inclusive/exclusive)
+   - Assign taxes to products and transactions
+   - Manage measurement units and conversion factors
+
+8. Reporting & Analytics
+   - Sales Report
+   - Purchase Report
+   - Inventory Report
+   - Income Statement Report
+   - Balance Sheet Report (assets, liabilities, equity, profit)
+   - Trial Balance Report
+   - Account Statement
+   - Export all reports as PDF (print-optimized)
+   - Page numbering and timestamp on exported reports
+
+9. Responsive & Modern UI
+   - Mobile-friendly login, registration, and verification pages
+   - Responsive admin dashboard and tables
+   - Clean, professional design with company branding
+
+10. Notifications & Alerts
+    - Success and error messages for user actions
+    - Email notifications for verification and password reset
+
+11. Security & Data Integrity
+    - CSRF protection on all forms
+    - Input validation and error feedback
+    - Access denied pages for unauthorized actions
+
+12. Miscellaneous
+    - Modular codebase using Laravel Blade and Livewire
+    - Easy extensibility for future features
+    - Well-structured documentation and code comments
+
+
+13. Advanced Double-Entry Accounting (Custom Package)
+    - Accounts Management
+        - List, create, edit, and delete/deactivate accounts
+        - Filter accounts by type, ID, title, account number, or company/store
+        - View latest account balance (real-time, via stored procedure)
+        - Prevent deletion if account has transactions or journal entries (deactivate instead)
+        - Reset account balance (admin only, protected)
+    - Payments
+        - Record and manage payments between accounts or entities
+        - Track payment status and history
+    - Income Revenue
+        - Record and manage income or revenue entries
+        - Categorize and report on different income sources
+    - Loan/Investment
+        - Record loans given or investments made
+        - Track outstanding balances, interest, and repayment schedules
+    - Loan/Investment Return
+        - Record repayments or returns on loans/investments
+        - Link returns to original loan/investment entries
+    - Security Deposit
+        - Manage security deposits received or paid
+        - Track deposit status, refunds, and adjustments
+    - Fund Transfers
+        - List, create, and delete fund transfer entries
+        - Filter fund transfers by date, accountable type, or ID
+        - Download fund transfer report as PDF (with date range)
+        - Secure deletion with business logic (uses custom DE::delete)
+    - Expenses Management
+        - List, create, and delete expense entries
+        - Filter expenses by date, accountable type, or ID
+        - Download expenses report as PDF (with date range)
+        - Secure deletion with business logic (uses custom DE::delete)
+    - Journals
+        - List all journal entries (filter by date range)
+        - View journal with related debit/credit transactions and accounts
+        - Download journal report as PDF (with date range)
+    - Ledgers & Account Statements
+        - List ledger entries with advanced filtering (by gas station, account title, company, date range, etc.)
+        - View account statement: previous balance, daily debit/credit, closing balance (via stored procedure)
+        - Download ledger/account statement as PDF (with date range)
+        - Multi-station and company-wide ledger support
+    - Tax Management
+        - Manage and configure tax accounts for financial transactions
+        - Integrate tax calculations into accounting entries and reports
+    - Advanced Reporting
+        - All major reports exportable as PDF (print-optimized, with page numbers and timestamps)
+        - Custom PDF templates for each report type
+        - Sales, Purchase, Inventory, Income Statement, Balance Sheet, and Trial Balance reports available
+    - Business Logic & Security
+        - All actions permission-protected
+        - Uses stored procedures for financial accuracy and performance
+        - Modular, extensible for future accounting features
+
+14. Package Integrations & Extensions
+    - Laravel Livewire for dynamic, reactive interfaces
+    - Spatie Laravel Permission for role & permission management
+    - Barryvdh DomPDF for PDF export of reports
+    - Laravel Excel for import/export (if enabled)
+    - Spatie Activitylog for user activity tracking (if enabled)
+    - Support for additional Laravel and third-party packages as needed
+
+This feature list covers all major modules, custom accounting features, package integrations, and capabilities of the Hilinkz Inventory Management System as implemented in the current codebase.

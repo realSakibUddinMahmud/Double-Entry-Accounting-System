@@ -1,0 +1,27 @@
+# Run tenant-specific migrations using the tenant database connection
+php artisan tenants:artisan "migrate --database=tenant"
+php artisan tenants:artisan "migrate --database=tenant --path=database/migrations/2025_06_03_062029_create_customers_table.php"  (example of single file migration)
+
+php artisan tenants:artisan "migrate --database=tenant --path=database/migrations/tenant" --tenant=6   
+
+# Run landlord-specific migrations using the landlord database connection
+php artisan migrate --path=database/migrations/landlord --database=landlord
+php artisan migrate --database=landlord --path=database/migrations/landlord/2025_06_16_065113_create_user_otps_table.php   (example of single file migration)
+
+# Run de-module migration in tenant database
+php artisan tenants:artisan "migrate --database=tenant --path=packages/Hilinkz/DEAccounting/migrations"
+
+Create or Update Database View
+php artisan db:seed --class=ViewSeeder
+
+Create or Update Database Procedure
+php artisan db:seed --class=ProcedureSeeder
+
+Run this url to database view and procedure seeder.
+http://sopno.localhost:8000/refresh-database?secret=admin1234
+
+Run this url for role permission seeder.
+http://sopno.localhost:8000/refresh-roles-permissions?secret=admin1234
+
+Important note:(audit trail multi-tenancy)
+Update vendor/owen-it/laravel-auditing/src/Models/Audit.php with doc/Audit.php
